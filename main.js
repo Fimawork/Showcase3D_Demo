@@ -4,7 +4,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {CameraManager,UpdateCameraPosition, InputEvent,Camera_Inspector,SetDefaultCameraStatus,InstFBXLoader,InstGLTFLoader,FindMataterialByName,posData} from 'https://cdn.jsdelivr.net/gh/Fimawork/threejs_tools/fx_functions.js';
 import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
-
+import { TIFFLoader } from 'three/addons/loaders/TIFFLoader.js';
 
 
 
@@ -85,6 +85,31 @@ function init()
 	//scene.add(helper);
 
 	scene.add( pointLight );
+
+	///桌布
+
+	let HUD = new THREE.Object3D();
+
+	const loader_HUD = new TIFFLoader();
+
+	const geometry_HUD = new THREE.PlaneGeometry();
+
+	loader_HUD.load( './images/iphone_wallpaper.tif', function ( texture ) {
+
+		texture.colorSpace = THREE.SRGBColorSpace;
+
+		const material_HUD = new THREE.MeshBasicMaterial( { map: texture, transparent: true,blending: THREE.AdditiveBlending,opacity:0.9 ,depthWrite: false } );
+
+		const mesh_HUD = new THREE.Mesh( geometry_HUD, material_HUD );
+		const img_scale =0.16;
+
+		mesh_HUD.position.set( 0.09, 0, 0 );
+		mesh_HUD.scale.set(img_scale*8.4,img_scale*18.17,1);
+		mesh_HUD.rotation.y=Math.PI/2;
+		HUD.add(mesh_HUD);
+
+		scene.add( HUD );
+	} );
 
 	///EventListener
   	window.addEventListener( 'resize', onWindowResize );  
