@@ -5,6 +5,7 @@ import {CameraManager,UpdateCameraPosition, InputEvent,Camera_Inspector,SetDefau
 import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import { TIFFLoader } from 'three/addons/loaders/TIFFLoader.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 
 
@@ -50,7 +51,45 @@ function init()
   	camera.position.copy(CameraDefaultPos);
   	posData[0]={ camera_pos:CameraDefaultPos, controlsTarget_pos:ControlsTargetDefaultPos};
 
-	InstGLTFLoader("./models/iphone_17_pro_revised.glb",modelPosition,modelRotation,modeScale,"test",null,scene);
+	InstGLTFLoader("./models/iphone_17_pro_revised.glb",modelPosition,modelRotation,modeScale,"iphone",null,scene);
+	InstGLTFLoader_Transparent("./models/iphone_case.glb",modelPosition,modelRotation,modeScale,"case",null,scene);
+
+	function InstGLTFLoader_Transparent(filePath,thisPos,thisRot,thisScale,thisName,thisParent,thisScene)
+	{
+		const loader = new GLTFLoader();
+		loader.load( filePath, function ( gltf ) {
+
+			const model = gltf.scene;
+			model.position.copy(thisPos);
+			model.rotation.set(thisRot.x, thisRot.y, thisRot.z);
+			model.scale.set(thisScale,thisScale,thisScale);
+
+			model.name=thisName;
+
+			model.traverse( function ( object ) {
+				//if ( object.isMesh )
+				//{
+				//	object.material.depthTest = false;
+				//}
+
+				//object1.renderOrder = 1; // 背景透明物件
+				//object2.renderOrder = 2; // 前景透明物件
+
+				object.renderOrder = 2;
+			})
+
+			if(thisParent!=null)
+			{
+				thisParent.add(model)
+			}
+
+			else
+			{
+				thisScene.add( model );
+			}
+
+		});
+	}
   	///利用座標設定旋轉中心及鏡頭焦點，camera不須另外設定初始角度
   	controls = new OrbitControls( camera, renderer.domElement );
   	controls.enablePan = false;//右鍵平移效果
