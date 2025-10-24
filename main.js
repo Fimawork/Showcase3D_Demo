@@ -52,8 +52,7 @@ function init()
   	posData[0]={ camera_pos:CameraDefaultPos, controlsTarget_pos:ControlsTargetDefaultPos};
 
 	InstGLTFLoader("./models/iphone_17_pro_revised.glb",modelPosition,modelRotation,modeScale,"iphone",null,scene);
-
-	setTimeout(() => { InstGLTFLoader_Transparent("./models/iphone_case.glb",modelPosition,modelRotation,modeScale,"case",null,scene); }, 1500);
+	InstGLTFLoader_Transparent("./models/iphone_case.glb",modelPosition,modelRotation,modeScale,"case",null,scene); 
 	
 
 	function InstGLTFLoader_Transparent(filePath,thisPos,thisRot,thisScale,thisName,thisParent,thisScene)
@@ -69,23 +68,25 @@ function init()
 
 			const glassMaterial = new THREE.MeshPhysicalMaterial( {
 			color: 0xffffff, 
-			transparent:true,
+			transparent:true,//沒設定，畫面會出錯
 			transmission: 1,
-			metalness: 0.25, 
+			metalness: 0.5, 
 			roughness: 0, 
+			ior:1,//<1畫面會不穩定
 			depthWrite:false
 			} );
 
 
 			model.traverse( function ( object ) {
-				if ( object.isMesh )
-				{
-					//object.material.depthTest = false;
-					object.material=glassMaterial;
+				
+					if ( object.isMesh )
+					{
 
-					//console.log(object.material);
-				}
+						object.material=glassMaterial;
+					
 
+					}
+			
 				//object1.renderOrder = 1; // 背景透明物件
 				//object2.renderOrder = 2; // 前景透明物件
 
