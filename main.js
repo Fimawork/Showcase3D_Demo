@@ -53,7 +53,7 @@ function init()
 
 	InstGLTFLoader("./models/iphone_17_pro_revised.glb",modelPosition,modelRotation,modeScale,"iphone",null,scene);
 
-	setTimeout(() => { InstGLTFLoader_Transparent("./models/iphone_case.glb",modelPosition,modelRotation,modeScale,"case",null,scene); }, 1000);
+	setTimeout(() => { InstGLTFLoader_Transparent("./models/iphone_case.glb",modelPosition,modelRotation,modeScale,"case",null,scene); }, 1500);
 	
 
 	function InstGLTFLoader_Transparent(filePath,thisPos,thisRot,thisScale,thisName,thisParent,thisScene)
@@ -72,20 +72,20 @@ function init()
 			} );
 
 
-			model.traverse( function ( object ) {
-				if ( object.isMesh )
-				{
-					//object.material.depthTest = false;
-					//object.material=glassMaterial;
-
-					console.log(object.material);
-				}
-
-				//object1.renderOrder = 1; // 背景透明物件
-				//object2.renderOrder = 2; // 前景透明物件
-
-				//object.renderOrder = 2;
-			})
+			//model.traverse( function ( object ) {
+			//	if ( object.isMesh )
+			//	{
+			//		//object.material.depthTest = false;
+			//		//object.material=glassMaterial;
+//
+			//		console.log(object.material);
+			//	}
+//
+			//	//object1.renderOrder = 1; // 背景透明物件
+			//	//object2.renderOrder = 2; // 前景透明物件
+//
+			//	object.renderOrder = 2;
+			//})
 
 			if(thisParent!=null)
 			{
