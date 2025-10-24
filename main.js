@@ -52,7 +52,9 @@ function init()
   	posData[0]={ camera_pos:CameraDefaultPos, controlsTarget_pos:ControlsTargetDefaultPos};
 
 	InstGLTFLoader("./models/iphone_17_pro_revised.glb",modelPosition,modelRotation,modeScale,"iphone",null,scene);
-	InstGLTFLoader_Transparent("./models/iphone_case.glb",modelPosition,modelRotation,modeScale,"case",null,scene);
+
+	setTimeout(() => { InstGLTFLoader_Transparent("./models/iphone_case.glb",modelPosition,modelRotation,modeScale,"case",null,scene); }, 1000);
+	
 
 	function InstGLTFLoader_Transparent(filePath,thisPos,thisRot,thisScale,thisName,thisParent,thisScene)
 	{
@@ -69,11 +71,14 @@ function init()
 			color: 0xffffff, metalness: 0, roughness: 0, transmission: 1.0,ior:0.1,thickness:0
 			} );
 
+
 			model.traverse( function ( object ) {
 				if ( object.isMesh )
 				{
 					//object.material.depthTest = false;
-					object.material=glassMaterial;
+					//object.material=glassMaterial;
+
+					console.log(object.material);
 				}
 
 				//object1.renderOrder = 1; // 背景透明物件
