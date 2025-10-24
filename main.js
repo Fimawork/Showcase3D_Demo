@@ -63,19 +63,23 @@ function init()
 			model.position.copy(thisPos);
 			model.rotation.set(thisRot.x, thisRot.y, thisRot.z);
 			model.scale.set(thisScale,thisScale,thisScale);
-
 			model.name=thisName;
 
+			const glassMaterial = new THREE.MeshPhysicalMaterial( {
+			color: 0xffffff, metalness: 0, roughness: 0, transmission: 1.0,ior:0.1,thickness:0
+			} );
+
 			model.traverse( function ( object ) {
-				//if ( object.isMesh )
-				//{
-				//	object.material.depthTest = false;
-				//}
+				if ( object.isMesh )
+				{
+					//object.material.depthTest = false;
+					object.material=glassMaterial;
+				}
 
 				//object1.renderOrder = 1; // 背景透明物件
 				//object2.renderOrder = 2; // 前景透明物件
 
-				object.renderOrder = 2;
+				//object.renderOrder = 2;
 			})
 
 			if(thisParent!=null)
