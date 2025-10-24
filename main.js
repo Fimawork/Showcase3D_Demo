@@ -3,11 +3,8 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {CameraManager,UpdateCameraPosition, InputEvent,Camera_Inspector,SetDefaultCameraStatus,InstFBXLoader,InstGLTFLoader,FindMataterialByName,posData} from 'https://cdn.jsdelivr.net/gh/Fimawork/threejs_tools/fx_functions.js';
 import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
-import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import { TIFFLoader } from 'three/addons/loaders/TIFFLoader.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-
-
 
 let scene, camera, renderer, stats, mixer;
 let controls;
@@ -28,10 +25,6 @@ const hold_time=4.5;
 
 init();
 animate();
-EventListener();
-//Camera_Inspector(camera,controls);
-
-//Material_Inspector(item_01);
 
 function init()
 {
@@ -53,7 +46,8 @@ function init()
 
 	InstGLTFLoader("./models/iphone_17_pro_revised.glb",modelPosition,modelRotation,modeScale,"iphone",null,scene);
 	InstGLTFLoader_Transparent("./models/iphone_case.glb",modelPosition,modelRotation,modeScale,"case",null,scene); 
-	
+
+	setTimeout(() => { threeContainer.classList.remove("SceneCrossEffect_anim");}, 3000);//避免為正確執行FadeIn動畫
 
 	function InstGLTFLoader_Transparent(filePath,thisPos,thisRot,thisScale,thisName,thisParent,thisScene)
 	{
@@ -77,20 +71,11 @@ function init()
 			} );
 
 
-			model.traverse( function ( object ) {
-				
-					if ( object.isMesh )
-					{
-
-						object.material=glassMaterial;
-					
-
-					}
-			
-				//object1.renderOrder = 1; // 背景透明物件
-				//object2.renderOrder = 2; // 前景透明物件
-
-				//object.renderOrder = 2;
+			model.traverse( function ( object ) {				
+				if ( object.isMesh )
+				{
+					object.material=glassMaterial;
+				}
 			})
 
 			if(thisParent!=null)
@@ -207,55 +192,6 @@ function animate()
 	}
 }
 
-
-
-
-
-function EventListener()
-{
-  window.addEventListener("keydown",function (event) {
-
-      switch (event.code) 
-      {
-
-        case "Space":
-        //MoveModelOFF();
-
-		console.log("YES");
-
-        break;
-
-        case "ArrowDown":
-
-       //console.log(scene);
-
-        break;
-
-        case "ArrowUp":
-        
-        
-        break;
-
-        case "ArrowLeft":
-
-        break;
-
-        case "ArrowRight":
-
-
-        break;
-      }
-      
-  });
-
-  ///滑鼠點擊accessory可啟用模型移動面板
-  window.addEventListener("pointerdown", function(e) {
-    
-  });
-
-
- 
-}
 
 
 
