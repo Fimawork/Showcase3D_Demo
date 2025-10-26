@@ -44,21 +44,16 @@ function init()
   	camera.position.copy(CameraDefaultPos);
   	posData[0]={ camera_pos:CameraDefaultPos, controlsTarget_pos:ControlsTargetDefaultPos};
 
-	InstGLTFLoader("./models/iphone_17_pro_revised.glb",modelPosition,modelRotation,modeScale,"iphone",null,scene);
-	InstGLTFLoader_Transparent("./models/iphone_case.glb",modelPosition,modelRotation,modeScale,"case",null,scene); 
-
 	setTimeout(() => { threeContainer.classList.remove("SceneCrossEffect_anim");}, 3000);//避免為正確執行FadeIn動畫
 
-	function InstGLTFLoader_Transparent(filePath,thisPos,thisRot,thisScale,thisName,thisParent,thisScene)
-	{
-		const loader = new GLTFLoader();
-		loader.load( filePath, function ( gltf ) {
+	const loader = new GLTFLoader();
+		loader.load("./models/iphone_17_pro_withCase.glb", function ( gltf ) {
 
 			const model = gltf.scene;
-			model.position.copy(thisPos);
-			model.rotation.set(thisRot.x, thisRot.y, thisRot.z);
-			model.scale.set(thisScale,thisScale,thisScale);
-			model.name=thisName;
+			model.position.copy(modelPosition);
+			model.rotation.set(modelRotation.x, modelRotation.y, modelRotation.z);
+			model.scale.set(modeScale,modeScale,modeScale);
+			model.name="iphone with case";
 
 			const glassMaterial = new THREE.MeshPhysicalMaterial( {
 			color: 0xffffff, 
@@ -70,26 +65,18 @@ function init()
 			depthWrite:false
 			} );
 
+			let pc_case=model.getObjectByName("case");
 
-			model.traverse( function ( object ) {				
+			pc_case.traverse( function ( object ) {				
 				if ( object.isMesh )
 				{
 					object.material=glassMaterial;
 				}
 			})
 
-			if(thisParent!=null)
-			{
-				thisParent.add(model)
-			}
+			scene.add( model );
 
-			else
-			{
-				thisScene.add( model );
-			}
-
-		});
-	}
+	});
   	///利用座標設定旋轉中心及鏡頭焦點，camera不須另外設定初始角度
   	controls = new OrbitControls( camera, renderer.domElement );
   	controls.enablePan = false;//右鍵平移效果
