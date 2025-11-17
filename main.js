@@ -1,10 +1,12 @@
 import * as THREE from 'three';
 
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import {CameraManager,UpdateCameraPosition, InputEvent,Camera_Inspector,SetDefaultCameraStatus,InstFBXLoader,InstGLTFLoader,FindMataterialByName,posData} from 'https://cdn.jsdelivr.net/gh/Fimawork/threejs_tools/fx_functions.js';
+import {CameraManager,UpdateCameraPosition, InputEvent,Camera_Inspector,SetDefaultCameraStatus,InstFBXLoader,InstGLTFLoader,FindMataterialByName,posData,dracoLoader} from 'https://cdn.jsdelivr.net/gh/Fimawork/threejs_tools/fx_functions.js';
 import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 import { TIFFLoader } from 'three/addons/loaders/TIFFLoader.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+import { iphone_17_pro_withCase } from './models/iphone_17_pro_withCase_slices.js';
 
 let scene, camera, renderer, stats, mixer;
 let controls;
@@ -24,7 +26,6 @@ const hold_time=4.5;
 
 
 init();
-animate();
 
 function init()
 {
@@ -46,15 +47,44 @@ function init()
 
 	setTimeout(() => { threeContainer.classList.remove("SceneCrossEffect_anim");}, 3000);//避免為正確執行FadeIn動畫
 
-	const loader = new GLTFLoader();
-		loader.load("./models/iphone_17_pro_withCase.glb", function ( gltf ) {
+	//加密模組
+	function base64ToArrayBuffer(base64) 
+	{
+		// 去除所有非 base64 字元
+		base64 = base64.replace(/[^A-Za-z0-9+/=]/g, "");
 
+    	const binary = atob(base64);
+    	const len = binary.length;
+    	const bytes = new Uint8Array(len);
+
+    	for (let i = 0; i < len; i++) 
+		{
+    	    bytes[i] = binary.charCodeAt(i);
+    	}
+
+    	return bytes.buffer;
+	}
+
+	const arrayBuffer = base64ToArrayBuffer(iphone_17_pro_withCase());
+
+	//draco模組
+	dracoLoader.setDecoderPath( 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/libs/draco/' );
+	dracoLoader.preload();
+
+	const loader = new GLTFLoader();
+	loader.setDRACOLoader(dracoLoader);
+	loader.parse(
+		arrayBuffer,
+		'',
+		(gltf) => {
+			
+	
 			const model = gltf.scene;
 			model.position.copy(modelPosition);
 			model.rotation.set(modelRotation.x, modelRotation.y, modelRotation.z);
 			model.scale.set(modeScale,modeScale,modeScale);
 			model.name="iphone with case";
-
+			
 			const glassMaterial = new THREE.MeshPhysicalMaterial( {
 			color: 0xffffff, 
 			transparent:true,//沒設定，畫面會出錯
@@ -73,10 +103,16 @@ function init()
 					object.material=glassMaterial;
 				}
 			})
+			
+			scene.add(model);
+			animate();
+		},
+		(error) => {
+			console.error('Failed to load model:', error);
+		}
+	);
 
-			scene.add( model );
-
-	});
+		
   	///利用座標設定旋轉中心及鏡頭焦點，camera不須另外設定初始角度
   	controls = new OrbitControls( camera, renderer.domElement );
   	controls.enablePan = false;//右鍵平移效果
